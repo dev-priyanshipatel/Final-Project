@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { setUser } from "../features/auth/authSlice";
-import { auth } from "../../config/firebase/firebase.config";
+import { auth } from "../firebase/firebase.config";
 
 const Navbar = ({ isLoggedIn = false, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);

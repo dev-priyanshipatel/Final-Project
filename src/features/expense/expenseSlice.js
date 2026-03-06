@@ -9,8 +9,9 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { db } from "../../../config/firebase/firebase.config";
+
 import { deleteCategory } from "../category/categorySlice";
+import { db } from "../../firebase/firebase.config";
 
 export const addExpense = createAsyncThunk("expense/addExpense", async (data) => {
     try {

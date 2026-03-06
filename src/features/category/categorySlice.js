@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
-import { db } from "../../../config/firebase/firebase.config";
+import { db } from "../../firebase/firebase.config";
 
 export const addCategory = createAsyncThunk('category/addCategory' , async ({name, uid, date}) => {
     try {

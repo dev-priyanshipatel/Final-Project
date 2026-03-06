@@ -14,8 +14,8 @@ import Home from "./pages/layout/Home";
 import EditExpense from "./pages/expense/EditExpense";
 import { useDispatch } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../config/firebase/firebase.config";
 import { setUser } from "./features/auth/authSlice";
+import { auth } from "./firebase/firebase.config";
 
 const App = () => {
 
