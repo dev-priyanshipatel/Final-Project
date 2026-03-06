@@ -1,8 +1,31 @@
+import { signOut } from "firebase/auth";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { setUser } from "../features/auth/authSlice";
+import { auth } from "../../config/firebase/firebase.config";
 
 const Navbar = ({ isLoggedIn = false, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  const user = useSelector((store) => store.auth.user);
+
+  const handleLogout = async () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+
+    if (!confirmLogout) return;
+
+    try {
+      await signOut(auth);
+
+      dispatch(setUser(null));
+
+      toast.success("Logged out successfully");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <nav className="bg-teal-50/60 backdrop-blur-md border-b border-teal-100 shadow-sm sticky top-0 z-50">
@@ -33,7 +56,7 @@ const Navbar = ({ isLoggedIn = false, onLogout }) => {
               Home
             </Link>
 
-            <Link to="/category" className="hover:text-teal-600 transition">
+            <Link to="/dashboard" className="hover:text-teal-600 transition">
               Dashboard
             </Link>
 
@@ -45,9 +68,9 @@ const Navbar = ({ isLoggedIn = false, onLogout }) => {
               Category
             </Link>
 
-            {isLoggedIn ? (
+            {user ? (
               <button
-                onClick={onLogout}
+                onClick={handleLogout}
                 className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
               >
                 logout
@@ -93,9 +116,9 @@ const Navbar = ({ isLoggedIn = false, onLogout }) => {
             category
           </Link>
 
-          {isLoggedIn ? (
+          {user ? (
             <button
-              onClick={onLogout}
+              onClick={handleLogout}
               className="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
             >
               logout

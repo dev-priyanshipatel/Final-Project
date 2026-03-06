@@ -10,6 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../../config/firebase/firebase.config";
+import { deleteCategory } from "../category/categorySlice";
 
 export const addExpense = createAsyncThunk("expense/addExpense", async (data) => {
     try {
@@ -88,6 +89,13 @@ const expenseSlice = createSlice({
         return item.id !== action.payload;
       });
       state.isLoading = false;
+    });
+    builder.addCase(deleteCategory.fulfilled, (state, action) => {
+      const deletedIds = action.payload.expenseIds;
+
+      state.list = state.list.filter(
+        (expense) => !deletedIds.includes(expense.id),
+      );
     });
   },
 });

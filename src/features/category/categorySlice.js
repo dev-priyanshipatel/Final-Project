@@ -39,10 +39,30 @@ export const fetchCategoryByUser = createAsyncThunk("category/fetchCategoryByUse
 
 export const deleteCategory = createAsyncThunk("category/deleteCategory", async (id ) => {
     try {
-        await deleteDoc(doc(db, "categories", id));
-        return id;
+
+      const q = query(collection(db, "expenses"), where("category", "==", id));
+
+      const snapshot = await getDocs(q);
+
+      const deletedExpenseIds = [];
+
+      const deletePromises = snapshot.docs.map((docItem) => {
+        deletedExpenseIds.push(docItem.id);
+
+        return deleteDoc(doc(db, "expenses", docItem.id));
+      });
+
+      await Promise.all(deletePromises);
+
+
+      await deleteDoc(doc(db, "categories", id));
+
+      return {
+        categoryId: id,
+        expenseIds: deletedExpenseIds,
+      };
     } catch (error) {
-        console.log(error.message);
+      console.log(error.message);
     }
 });
 
@@ -77,11 +97,10 @@ const categorySlice = createSlice({
         })
 
         builder.addCase(deleteCategory.fulfilled, (state, action) => {
-            state.list = state.list.filter((item) => {
-                return item.id !== action.payload;
-            })
-            state.isLoading = false;
-        })
+          state.list = state.list.filter(
+            (item) => item.id !== action.payload.categoryId,
+          );
+        });
     }
 })
 

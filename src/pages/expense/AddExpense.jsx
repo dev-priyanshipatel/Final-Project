@@ -35,6 +35,36 @@ const AddExpense = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (!input.name.trim()) {
+      toast.error("Expense name is required");
+      return;
+    }
+
+    if (input.name.length < 3) {
+      toast.error("Expense name must be at least 3 characters");
+      return;
+    }
+
+    if (!input.category) {
+      toast.error("Please select a category");
+      return;
+    }
+
+    if (!input.amount) {
+      toast.error("Amount is required");
+      return;
+    }
+
+    if (Number(input.amount) <= 0) {
+      toast.error("Amount must be greater than 0");
+      return;
+    }
+
+    if (!input.date) {
+      toast.error("Please select a date");
+      return;
+    }
+
     dispatch(addExpense({...input, uid : user.uid}))
     navigate("/expenses");
     toast.success("Expense added successfully...");

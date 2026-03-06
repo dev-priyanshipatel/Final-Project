@@ -17,8 +17,15 @@ const Category = () => {
   },[user])
 
   const handleDelete = (id) => {
+    const confirmDelete = window.confirm(
+      "Expenses related to this category will also be deleted. Are you sure?",
+    );
+
+    if (!confirmDelete) return;
+
     dispatch(deleteCategory(id));
-    toast.success("category deleted successfulyy...");
+
+    toast.success("Category and related expenses deleted");
   }
   return (
     <>

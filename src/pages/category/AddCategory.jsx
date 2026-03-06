@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addCategory } from "../../features/category/categorySlice";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AddCategory = () => {
     const dispatch = useDispatch() ;
@@ -23,8 +24,18 @@ const AddCategory = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!user) {
-      alert("User not logged in");
+    if (!input.name.trim()) {
+      toast.error("Category name is required");
+      return;
+    }
+
+    if (input.name.length < 3) {
+      toast.error("Category name must be at least 3 characters");
+      return;
+    }
+
+    if (!input.date) {
+      toast.error("Please select a date");
       return;
     }
 
@@ -33,7 +44,7 @@ const AddCategory = () => {
         date : input.date,
         uid : user.uid
     }))
-
+    toast.success("Category Added Successfully...");
     navigate('/category');
   };
 

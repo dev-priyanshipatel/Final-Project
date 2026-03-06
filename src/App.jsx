@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/layout/Dashboard";
 import Signup from "./pages/auth/Signup";
@@ -12,8 +12,33 @@ import Expenses from "./pages/expense/Expenses";
 import AddExpense from "./pages/expense/AddExpense";
 import Home from "./pages/layout/Home";
 import EditExpense from "./pages/expense/EditExpense";
+import { useDispatch } from "react-redux";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../config/firebase/firebase.config";
+import { setUser } from "./features/auth/authSlice";
 
 const App = () => {
+
+  const dispatch = useDispatch();
+
+  useEffect( () => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(
+          setUser({
+            uid: user.uid,
+            email: user.email,
+            name: user.displayName,
+            profileURL: user.photoURL,
+          }),
+        );
+      } else {
+        dispatch(setUser(null));
+      }
+    });
+
+    return () => unsubscribe();
+  }, [])
   return (
     <div>
       <BrowserRouter>
