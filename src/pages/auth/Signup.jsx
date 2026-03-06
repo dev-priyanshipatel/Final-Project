@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import { googleSignin, signup } from "../features/auth/authSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { googleSignin, signup } from "../../features/auth/authSlice";
 import toast from "react-hot-toast";
 
 const Signup = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const user = useSelector((store) => store.auth.user);
 
     const [input, setInput] = useState({
       name: "",
@@ -18,10 +20,17 @@ const Signup = () => {
         setInput({...input, [e.target.id] : e.target.value});
     }
 
+    useEffect(() => {
+      if (user) {
+        navigate("/");
+      }
+    }, [user]);
+
     const handleSignup = (e) => {
         e.preventDefault();
         
         dispatch(signup(input));
+        navigate('/')
         toast.success("Signup successfull...")
     }
 

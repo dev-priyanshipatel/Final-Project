@@ -17,8 +17,16 @@ export const signup = createAsyncThunk('auth/signup', async ({email, password, n
                 name, email : userEmail, createdAt: new Date()
             })
         }
-        userCredentials.user.displayName = name;
-        return userCredentials.user;
+        // userCredentials.user.displayName = name;
+        const user = userCredentials.user;
+
+        const userData = {
+            name : name,
+            email : user.email,
+            uid : user.uid
+        }
+
+        return userData;
     } catch (error) {
         console.log(error.message);
     }
@@ -27,7 +35,15 @@ export const signup = createAsyncThunk('auth/signup', async ({email, password, n
 export const login = createAsyncThunk('auth/login', async ({email, password}) => {
     try {
         const userCredentials = await signInWithEmailAndPassword(auth, email, password);
-        return userCredentials.user;
+        const user = userCredentials.user;
+
+        const userData = {
+          name: user.displayName,
+          email: user.email,
+          uid: user.uid,
+        };
+
+        return userData;
     } catch (error) {
         console.log(error.message);
     }
@@ -48,8 +64,17 @@ export const googleSignin = createAsyncThunk('auth/googleSignin', async () => {
             createdAt: new Date(),
           });
         }
+        
+        const user = userCredentials.user;
 
-        return userCredentials.user;
+        const userData = {
+          name: user.displayName,
+          email: user.email,
+          uid: user.uid,
+          profileURL : user.photoURL
+        };
+
+        return userData;
     } catch (error) {
         console.log(error.message);
     }
@@ -58,12 +83,10 @@ const authSlice = createSlice({
     name : 'auth',
     initialState : {
         user : null,
-        isLoading : null,
+        isLoading : false,
         error : null
     },
-    reducers :{
-    
-    },
+    reducers :{},
     extraReducers : (builder) => {
         builder.addCase(signup.pending, (state, action) => {
             state.isLoading = true;
@@ -77,6 +100,14 @@ const authSlice = createSlice({
           state.isLoading = true;
         });
         builder.addCase(login.fulfilled, (state, action) => {
+            state.user = action.payload;
+            state.isLoading = false;
+        })
+
+        builder.addCase(googleSignin.pending, (state, action) => {
+            state.isLoading = true;
+        })
+        builder.addCase(googleSignin.fulfilled, (state, action) => {
             state.user = action.payload;
             state.isLoading = false;
         })

@@ -1,17 +1,26 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import { googleSignin, login } from "../features/auth/authSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { googleSignin, login } from "../../features/auth/authSlice";
 import toast from "react-hot-toast";
 
 const Login = () => {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector(store => store.auth.user)
 
   const [input, setInput] = useState({
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if(user){
+      navigate('/');
+      return;
+    }
+  }, [user])
 
   const handleChange = (e) => {
     setInput({ ...input, [e.target.id]: e.target.value });
@@ -21,11 +30,13 @@ const Login = () => {
     e.preventDefault();
 
     dispatch(login(input));
+    
     toast.success("Login Successfull...");
   };
 
   const handleGoogleSignin = () => {
         dispatch(googleSignin());
+       
         toast.success("Login Successfull...");
       }
   return (
